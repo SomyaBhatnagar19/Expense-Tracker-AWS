@@ -39,18 +39,56 @@ export default function SignUp() {
           password: password,
         }),
       });
+  
+    //   const data = await response.json();
+  
       if (response.ok) {
         alert("User created successfully!");
+        console.log("User successfully Signed Up.");
         // Clearing form inputs after successful signup
         setName("");
         setEmail("");
         setPassword("");
+      } else {
+        alert("User with this email already exists.");
       }
     } catch (err) {
       console.log("Error: ", err);
       alert(err);
     }
   };
+
+ // function to handle login
+const handleLogin = async () => {
+    try {
+        const response = await fetch("http://localhost:3000/SignUp/login", {
+            method: "POST",
+            headers: {
+                "Content-type": "application/json",
+            },
+            body: JSON.stringify({
+                email: email,
+                password: password,
+            }),
+        });
+
+        if (response.ok) {
+            const { token } = await response.json();
+
+            // Store user token data in local storage
+            localStorage.setItem("token", token);
+
+            alert("Login successful!");
+
+            // Add any additional logic you need after successful login
+        } else {
+            alert("Invalid email or password. Please try again.");
+        }
+    } catch (err) {
+        console.error("Error: ", err);
+        alert("Error during login. Please try again.");
+    }
+};
 
   return (
     <div className="min-h-screen flex items-center justify-center">
@@ -78,7 +116,7 @@ export default function SignUp() {
               <p>Forgot your password?</p>
               <button
                 className="mt-1 text-white px-3 py-1 border rounded-xl bg-slate-800"
-                onClick={LoginButtonClicked}
+                onClick={handleLogin}
               >
                 LOGIN
               </button>

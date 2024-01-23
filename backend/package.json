@@ -18,6 +18,7 @@
     "sequelize-cli": "^6.6.2"
   },
   "dependencies": {
+    "jsonwebtoken": "^9.0.2",
     "mysql2": "^3.7.1"
   }
 }

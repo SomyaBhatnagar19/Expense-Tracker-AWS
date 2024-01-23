@@ -1,11 +1,12 @@
+/* /frontend/App.js */
 
+import React from "react";
+import SignUp from "./Views/SignUp";
 
 function App() {
   return (
-    <div className="bg-emerald-800">
-      Hi from App.js.
-    </div>
-  );
+    <SignUp />
+  )
 }
 
 export default App;

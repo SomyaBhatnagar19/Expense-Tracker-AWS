@@ -5,7 +5,9 @@ import SignUp from "./Views/SignUp";
 
 function App() {
   return (
-    <SignUp />
+    <div className="bg-cyan-100">
+      <SignUp />
+    </div>
   )
 }
 

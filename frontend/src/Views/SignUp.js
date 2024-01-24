@@ -41,8 +41,7 @@ export default function SignUp() {
       });
   
     //   const data = await response.json();
-  
-      if (response.ok) {
+    if (response.ok) {
         alert("User created successfully!");
         console.log("User successfully Signed Up.");
         // Clearing form inputs after successful signup
@@ -61,17 +60,17 @@ export default function SignUp() {
  // function to handle login
 const handleLogin = async () => {
     try {
-        const response = await fetch("http://localhost:3000/SignUp/login", {
-            method: "POST",
-            headers: {
-                "Content-type": "application/json",
-            },
-            body: JSON.stringify({
-                email: email,
-                password: password,
-            }),
-        });
-
+      const response = await fetch("http://localhost:3000/SignUp/login", {
+        method: "POST",
+        headers: {
+            "Content-type": "application/json",
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+        body: JSON.stringify({
+            email: email,
+            password: password,
+        }),
+    });
         if (response.ok) {
             const { token } = await response.json();
 

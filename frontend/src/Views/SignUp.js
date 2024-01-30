@@ -39,9 +39,9 @@ export default function SignUp() {
           password: password,
         }),
       });
-  
-    //   const data = await response.json();
-    if (response.ok) {
+
+      //   const data = await response.json();
+      if (response.ok) {
         alert("User created successfully!");
         console.log("User successfully Signed Up.");
         // Clearing form inputs after successful signup
@@ -57,38 +57,60 @@ export default function SignUp() {
     }
   };
 
- // function to handle login
-const handleLogin = async () => {
+  const handleLogin = async () => {
     try {
       const response = await fetch("http://localhost:3000/SignUp/login", {
         method: "POST",
         headers: {
-            "Content-type": "application/json",
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          "Content-type": "application/json",
         },
         body: JSON.stringify({
-            email: email,
-            password: password,
+          email: email,
+          password: password,
         }),
-    });
-        if (response.ok) {
-            const { token } = await response.json();
-
-            // Store user token data in local storage
-            localStorage.setItem("token", token);
-
-            alert("Login successful!");
-
-            // Add any additional logic you need after successful login
+      });
+  
+      if (response.ok) {
+        const { token } = await response.json();
+  
+        // Store user token data in local storage
+        localStorage.setItem("token", token);
+  
+        // Now, set the Authorization header with the token for future requests
+        const authorizedResponse = await fetch("http://localhost:3000/SignUp/login", {
+          method: "GET", 
+          headers: {
+            "Content-type": "application/json",
+            Authorization: `Bearer ${token}`, 
+          },
+        });
+  
+        if (authorizedResponse.ok) {
+          // Handle successful authorization
+          console.log("Authorized successfully!");
         } else {
-            alert("Invalid email or password. Please try again.");
+          // Handle authorization error
+          console.error("Authorization error:", authorizedResponse.status);
         }
+  
+        console.log("Token:", token);
+        alert("Login successful!");
+      } else if (response.status === 400) {
+        
+        const { error } = await response.json();
+        alert(`Invalid email or password: ${error}`);
+      } else {
+       
+        const errorMessage = await response.text(); 
+        alert(`Error during login: ${errorMessage}`);
+      }
     } catch (err) {
-        console.error("Error: ", err);
-        alert("Error during login. Please try again.");
+      console.error("Error during login:", err);
+      alert("Error during login. Please try again.");
     }
-};
-
+  };
+  
+  
   return (
     <div className="min-h-screen flex items-center justify-center">
       <div className="grid grid-cols-2 w-full max-w-md">

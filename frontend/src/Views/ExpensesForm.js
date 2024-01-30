@@ -1,7 +1,7 @@
 /* /frontend/Views/ExpensesForm.js*/
 
 //file to have the functionality of expenses of users
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
 export default function ExpensesForm() {
 
@@ -12,10 +12,69 @@ export default function ExpensesForm() {
   const [amount, setAmount] = useState("");
   const [expenses, setExpenses] = useState([]);
 
-  //function for form submission
-  const handleAddExpense = (e) => {
+  useEffect(() => {
+    // Fetch expenses data when the component mounts
+    fetchExpenses();
+  }, []);
+
+  const fetchExpenses = async () => {
+    try {
+      const response = await fetch("http://localhost:3000/expenses", {
+        method: "GET",
+        headers: {
+          "Content-type": "application/json",
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        setExpenses(data);
+      } else {
+        console.error("Failed to fetch expenses");
+      }
+    } catch (err) {
+      console.error("Error fetching expenses:", err);
+    }
+  };
+
+  const handleAddExpense = async (e) => {
     e.preventDefault();
-  }
+  
+    try {
+      const token = localStorage.getItem("token");
+  
+      const response = await fetch("http://localhost:3000/expenses", {
+        method: "POST",
+        headers: {
+          "Content-type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          category,
+          date,
+          description,
+          amount,
+        }),
+      });
+  
+      if (response.ok) {
+        // Update the expenses data after successfully adding a new expense
+        fetchExpenses();
+  
+        // Clear form inputs
+        setCategory("");
+        setDate("");
+        setDescription("");
+        setAmount("");
+      } else {
+        console.error("Failed to add expense");
+      }
+    } catch (err) {
+      console.error("Error adding expense:", err);
+    }
+  };
+  
 
   return (
     <div className="flex flex-col lg:flex-row pb-16">

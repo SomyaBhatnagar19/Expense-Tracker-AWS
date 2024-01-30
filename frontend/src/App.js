@@ -1,32 +1,27 @@
 /* /frontend/App.js */
 
-import React, { useEffect, useState } from "react";
-import { BrowserRouter as Router, Route, Routes, Navigate } from "react-router-dom";
+import React, {useEffect, useState} from "react";
+import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import SignUp from "./Views/SignUp";
 import ExpensesForm from "./Views/ExpensesForm";
+import Header from "./Views/Header";
 
 function App() {
-  // State to track whether the user is authenticated
+
   const [isAuthenticated, setIsAuthenticated] = useState(false);
 
   useEffect(() => {
     const token = localStorage.getItem("token");
-    setIsAuthenticated(!!token); // Set isAuthenticated to true if token exists
+    setIsAuthenticated(!!token);
   }, []);
 
   return (
     <Router>
       <div className="bg-cyan-100 min-h-screen">
+        {isAuthenticated && <Header />}
         <Routes>
-          <Route
-            path="/expenses"
-            element={<ExpensesForm />}
-            // Use the condition within the component
-          />
-          <Route
-            path="/"
-            element={isAuthenticated ? <Navigate to="/expenses" /> : <SignUp />}
-          />
+          {isAuthenticated && <Route path="/" element={<ExpensesForm />} />}
+          <Route path="/" element={<SignUp />} />
         </Routes>
       </div>
     </Router>
@@ -34,5 +29,8 @@ function App() {
 }
 
 export default App;
+
+
+
 
 

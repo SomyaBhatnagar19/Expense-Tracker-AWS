@@ -3,6 +3,9 @@
 //file to have the functionality of expenses of users
 import React, { useState, useEffect } from "react";
 
+import deleteBtn from "../assets/deleteBtn.png";
+import editBtn from "../assets/editBtn.png";
+
 export default function ExpensesForm() {
 
   //states for form input  
@@ -17,6 +20,7 @@ export default function ExpensesForm() {
     fetchExpenses();
   }, []);
 
+  //FETCHING THE DATA OF EXPENSES FROM EXPENSES TABLE
   const fetchExpenses = async () => {
     try {
       const response = await fetch("http://localhost:3000/expenses", {
@@ -38,6 +42,7 @@ export default function ExpensesForm() {
     }
   };
 
+  //ADD EXPENSES TO THE TABLE FROM CLIENT SIDE TO SERVER SIDE
   const handleAddExpense = async (e) => {
     e.preventDefault();
   
@@ -75,6 +80,34 @@ export default function ExpensesForm() {
     }
   };
   
+  //DELETE FUNCTIONALITY BY SENDING ID
+  const handleDeleteExpense = async (id) => {
+    try {
+      const token = localStorage.getItem("token");
+
+      const response = await fetch(`http://localhost:3000/expenses/${id}`, {
+        method: "DELETE",
+        headers: {
+          "Content-type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      if (response.ok) {
+        // Update the expenses data after successfully deleting an expense
+        fetchExpenses();
+        alert('Expense Deleted Successfully');
+      } else {
+        console.error("Failed to delete expense");
+        alert('Error deleting expense.');
+      }
+    } catch (err) {
+      console.error("Error deleting expense:", err);
+      alert('Error deleting expense.');
+    }
+  };
+
+
 
   return (
     <div className="flex flex-col lg:flex-row pb-16">
@@ -198,8 +231,9 @@ export default function ExpensesForm() {
                   {expense.amount}
                 </td>
                 <td className="py-2 px-4 border border-slate-800">
+                  {/* Delete and edit expense functionality */}
                   <div className="flex items-center justify-between">
-                  {/* <img
+                  <img
                       src={editBtn}
                       alt="editBtn"
                       className="h-6 w-6"
@@ -208,8 +242,8 @@ export default function ExpensesForm() {
                       src={deleteBtn}
                       alt="deleteBtn"
                       className="h-10 w-10"
-                      
-                    /> */}
+                      onClick={() => handleDeleteExpense(expense.id)}
+                    />
                   </div>
                 </td>
               </tr>

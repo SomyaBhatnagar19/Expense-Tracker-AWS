@@ -37,4 +37,30 @@ router.post('/', authMiddleware, async (req, res) => {
     }
 });
 
+// DELETE EXPENSE
+router.delete('/:id', authMiddleware, async (req, res) => {
+    try {
+        const userId = req.user.userId;
+        const expenseId = req.params.id;
+
+        // Check if the expense belongs to the user
+        const expense = await ExpensesModel.findOne({
+            where: { id: expenseId, userId },
+        });
+
+        if (!expense) {
+            return res.status(404).json({ message: 'Expense not found' });
+        }
+
+        // Delete the expense
+        await expense.destroy();
+
+        res.status(204).json();
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: 'Internal Server Error.' });
+    }
+}); 
+
+
 module.exports = router;
